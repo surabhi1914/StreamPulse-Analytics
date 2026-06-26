@@ -53,21 +53,21 @@ Completed:
 
 Key Results:
 
-| Metric | Value |
-|---|---:|
-| Parsed listening events | 19,098,853 |
-| Unique users | 992 |
-| Unique artists | 173,921 |
-| Unique tracks | 1,083,470 |
-| Date range | 2005-02-14 to 2013-09-29 |
+| Metric                  |                    Value |
+| ----------------------- | -----------------------: |
+| Parsed listening events |               19,098,853 |
+| Unique users            |                      992 |
+| Unique artists          |                  173,921 |
+| Unique tracks           |                1,083,470 |
+| Date range              | 2005-02-14 to 2013-09-29 |
 
 Data Quality Notes:
 
-| Field | Missing Rows | Missing % |
-|---|---:|---:|
-| `artist_id` | 600,848 | 3.15% |
-| `track_id` | 2,162,719 | 11.32% |
-| `track_name` | 210 | ~0.00% |
+| Field        | Missing Rows | Missing % |
+| ------------ | -----------: | --------: |
+| `artist_id`  |      600,848 |     3.15% |
+| `track_id`   |    2,162,719 |    11.32% |
+| `track_name` |          210 |    ~0.00% |
 
 Important Notes:
 
@@ -77,6 +77,18 @@ Important Notes:
 - Chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
 - The dataset is historical and should be framed as a product analytics case study.
 
-Next Phase:
+## Phase 2: Data Cleaning and Transformation
 
-Phase 2 will focus on data cleaning and transformation.
+Status: In Progress
+
+To complete:
+
+- Convert listening timestamps - ✔
+- Remove invalid records
+- Handle missing artists/tracks
+- Deduplicate exact duplicate events if needed
+- Normalize artist and track text fields
+- Create derived date fields
+- Create user-level activity fields
+- Save cleaned data to `data/processed/`
+- Update the documentation
