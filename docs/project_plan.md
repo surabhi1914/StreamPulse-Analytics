@@ -1,4 +1,4 @@
-# StreamPulse Analytics
+﻿# StreamPulse Analytics
 
 ## Product Analytics Platform for Music Streaming Behavior
 
@@ -368,61 +368,61 @@ listener-retention-analytics
 
 ```text
 streampulse-analytics/
-│
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
-├── docs/
-│   ├── project_plan.md
-│   ├── source_assessment.md
-│   ├── dataset_decision.md
-│   ├── data_dictionary.md
-│   ├── phase_updates.md
-│   └── business_recommendations.md
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   ├── warehouse/
-│   └── outputs/
-│
-├── notebooks/
-│   ├── 01_data_profile.ipynb
-│   ├── 02_data_cleaning.ipynb
-│   ├── 03_data_modeling.ipynb
-│   ├── 04_kpi_analysis.ipynb
-│   ├── 05_cohort_retention.ipynb
-│   ├── 06_funnel_analysis.ipynb
-│   ├── 07_segmentation.ipynb
-│   ├── 08_replay_prediction.ipynb
-│   ├── 09_experiment_analysis.ipynb
-│   └── 10_dashboard_prep.ipynb
-│
-├── sql/
-│   ├── schema.sql
-│   ├── views_kpis.sql
-│   ├── cohort_queries.sql
-│   ├── funnel_queries.sql
-│   ├── segmentation_queries.sql
-│   ├── replay_prediction_queries.sql
-│   └── experiment_queries.sql
-│
-├── src/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── ingest.py
-│   ├── clean.py
-│   ├── transform.py
-│   ├── load_postgres.py
-│   ├── sessionize.py
-│   ├── features.py
-│   ├── modeling.py
-│   ├── evaluation.py
-│   └── utils.py
-│
-└── dashboard/
-    └── streamlit_app.py
+â”‚
+â”œâ”€â”€ README.md
+â”œâ”€â”€ requirements.txt
+â”œâ”€â”€ .gitignore
+â”‚
+â”œâ”€â”€ docs/
+â”‚   â”œâ”€â”€ project_plan.md
+â”‚   â”œâ”€â”€ source_assessment.md
+â”‚   â”œâ”€â”€ dataset_decision.md
+â”‚   â”œâ”€â”€ data_dictionary.md
+â”‚   â”œâ”€â”€ phase_updates.md
+â”‚   â””â”€â”€ business_recommendations.md
+â”‚
+â”œâ”€â”€ data/
+â”‚   â”œâ”€â”€ raw/
+â”‚   â”œâ”€â”€ processed/
+â”‚   â”œâ”€â”€ warehouse/
+â”‚   â””â”€â”€ outputs/
+â”‚
+â”œâ”€â”€ notebooks/
+â”‚   â”œâ”€â”€ 01_data_profile.ipynb
+â”‚   â”œâ”€â”€ 02_data_cleaning.ipynb
+â”‚   â”œâ”€â”€ 03_data_modeling.ipynb
+â”‚   â”œâ”€â”€ 04_kpi_analysis.ipynb
+â”‚   â”œâ”€â”€ 05_cohort_retention.ipynb
+â”‚   â”œâ”€â”€ 06_funnel_analysis.ipynb
+â”‚   â”œâ”€â”€ 07_segmentation.ipynb
+â”‚   â”œâ”€â”€ 08_replay_prediction.ipynb
+â”‚   â”œâ”€â”€ 09_experiment_analysis.ipynb
+â”‚   â””â”€â”€ 10_dashboard_prep.ipynb
+â”‚
+â”œâ”€â”€ sql/
+â”‚   â”œâ”€â”€ schema.sql
+â”‚   â”œâ”€â”€ views_kpis.sql
+â”‚   â”œâ”€â”€ cohort_queries.sql
+â”‚   â”œâ”€â”€ funnel_queries.sql
+â”‚   â”œâ”€â”€ segmentation_queries.sql
+â”‚   â”œâ”€â”€ replay_prediction_queries.sql
+â”‚   â””â”€â”€ experiment_queries.sql
+â”‚
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ __init__.py
+â”‚   â”œâ”€â”€ config.py
+â”‚   â”œâ”€â”€ ingest.py
+â”‚   â”œâ”€â”€ clean.py
+â”‚   â”œâ”€â”€ transform.py
+â”‚   â”œâ”€â”€ load_postgres.py
+â”‚   â”œâ”€â”€ sessionize.py
+â”‚   â”œâ”€â”€ features.py
+â”‚   â”œâ”€â”€ modeling.py
+â”‚   â”œâ”€â”€ evaluation.py
+â”‚   â””â”€â”€ utils.py
+â”‚
+â””â”€â”€ dashboard/
+    â””â”€â”€ streamlit_app.py
 ```
 
 ---
@@ -485,6 +485,16 @@ Add:
 - Initial observations
 - Dataset limitations
 
+---
+
+
+## Phase 1 Profiling Update
+
+Status: Complete
+
+Phase 1 confirmed that the Last.fm-1K dataset is large enough and structured enough for the MVP. Full-dataset profiling found 19,098,853 parsed listening events, 992 users, 173,921 artists, 1,083,470 tracks, and activity from 2005-02-14 to 2013-09-29.
+
+Phase 2 is the next active phase and will focus on cleaning, timestamp validation, duplicate handling, malformed-row documentation, and fallback identifier logic for missing `artist_id` and `track_id` values.
 ---
 
 # Phase 2: Data Cleaning and Transformation
@@ -812,10 +822,10 @@ Analyze user progression through key engagement steps.
 
 ```text
 First listening event
-→ second active day
-→ 7 active days
-→ 30 active days
-→ active after 90 days
+â†’ second active day
+â†’ 7 active days
+â†’ 30 active days
+â†’ active after 90 days
 ```
 
 ---
@@ -824,10 +834,10 @@ First listening event
 
 ```text
 First artist listen
-→ second artist listen
-→ 5+ artist listens
-→ listens across multiple weeks
-→ artist replay within 30 days
+â†’ second artist listen
+â†’ 5+ artist listens
+â†’ listens across multiple weeks
+â†’ artist replay within 30 days
 ```
 
 ---
@@ -836,10 +846,10 @@ First artist listen
 
 ```text
 First track listen
-→ second track listen
-→ 3+ track listens
-→ replay within 7 days
-→ replay within 30 days
+â†’ second track listen
+â†’ 3+ track listens
+â†’ replay within 7 days
+â†’ replay within 30 days
 ```
 
 ---
@@ -1453,10 +1463,10 @@ These extensions should be separate modules or separate projects unless the data
 # Updated Build Order
 
 ```text
-[ ] Phase -1: Dataset decision documentation
-[ ] Phase 0: Project setup
-[ ] Phase 1: Data ingestion and profiling
-[ ] Phase 2: Data cleaning and transformation
+[x] Phase -1: Dataset decision documentation
+[x] Phase 0: Project setup
+[x] Phase 1: Data ingestion and profiling
+[ ] Phase 2: Data cleaning and transformation (next)
 [ ] Phase 3: Analytics data modeling
 [ ] Phase 4: Product metrics layer
 [ ] Phase 5: Cohort retention analysis
@@ -1492,3 +1502,4 @@ This project is successful if it demonstrates:
 15. Resume-ready and interview-discussable project narrative
 
 ---
+

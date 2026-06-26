@@ -5,7 +5,7 @@ Product Analytics Platform for Music Streaming Behavior
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](requirements.txt)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-planned-336791.svg)](sql/schema.sql)
 [![Streamlit](https://img.shields.io/badge/Streamlit-planned-FF4B4B.svg)](dashboard/streamlit_app.py)
-[![Status](https://img.shields.io/badge/Status-Phase%200-lightgrey.svg)](docs/phase_updates.md)
+[![Status](https://img.shields.io/badge/Status-Phase%201%20Complete-brightgreen.svg)](docs/phase_updates.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Overview
@@ -24,26 +24,54 @@ Music streaming platforms need to understand what behaviors lead to long-term en
 
 The MVP uses the Last.fm-1K listening dataset because it contains user-level timestamped listening events with artist and track information.
 
-## Why Last.fm-1K Was Selected
-
 Last.fm-1K supports product analytics questions that require many users and timestamped behavior. It is better suited for this MVP than single-user personal Spotify exports because it can support cohort analysis, retention-style analysis, segmentation, and replay prediction across listeners.
 
-## What The Dataset Supports
+## Dataset Summary
 
-- User engagement analysis
-- Repeat listening analysis
-- Artist and track replay behavior
-- Cohort retention analysis
-- Listening funnel analysis
-- User segmentation
-- Predictive replay modeling
-- SQL-based analytics and dashboard storytelling
+Phase 1 profiling confirmed:
 
-## Important Limitation
+| Metric | Value |
+|---|---:|
+| Parsed listening events | 19,098,853 |
+| Unique users | 992 |
+| Unique artists | 173,921 |
+| Unique tracks | 1,083,470 |
+| Date range | 2005-02-14 to 2013-09-29 |
 
-The dataset does not include saved tracks, playlist additions, skip behavior, device/platform, subscription plan, premium conversion, revenue, or real A/B test assignment.
+## Phase 1: Data Profiling Summary
 
-Because of this, the project avoids unsupported claims and focuses on valid analyses such as retention, replay behavior, listening funnels, segmentation, and predictive replay modeling.
+Phase 1 focused on understanding the raw Last.fm-1K files before cleaning or modeling.
+
+A 100K-row sample was used for schema inspection, while full-dataset profiling was performed with chunked processing to avoid loading the full listening file into memory.
+
+Key findings:
+
+- The dataset supports user-level product analytics because it includes user IDs and timestamped listening events.
+- The dataset supports retention analysis because listening activity spans multiple years.
+- Artist-level and track-level replay analysis are feasible.
+- `artist_id` is missing in 600,848 rows, or 3.15% of parsed listening events.
+- `track_id` is missing in 2,162,719 rows, or 11.32% of parsed listening events.
+- `track_name` is missing in 210 rows, which is negligible relative to the full dataset size.
+- Phase 2 will define fallback identifier logic for artist-level and track-level analysis.
+- The dataset is historical, so final insights will be framed as a product analytics case study.
+
+## Dataset Limitations
+
+This dataset does not include:
+
+- Saved or liked tracks
+- Playlist additions
+- Skip behavior
+- Device or platform
+- Subscription plan
+- Premium conversion
+- Revenue
+- True churn/cancellation labels
+- Real A/B test assignment
+
+Because of this, the project focuses on valid analyses such as listening engagement, retention, replay behavior, segmentation, inactivity risk, and observational experimentation.
+
+One ingestion limitation is that chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
 
 ## Target Skills Demonstrated
 
@@ -101,38 +129,9 @@ streampulse-analytics/
 |   |-- warehouse/
 |   `-- outputs/
 |-- notebooks/
-|   |-- 01_data_profile.ipynb
-|   |-- 02_data_cleaning.ipynb
-|   |-- 03_data_modeling.ipynb
-|   |-- 04_kpi_analysis.ipynb
-|   |-- 05_cohort_retention.ipynb
-|   |-- 06_funnel_analysis.ipynb
-|   |-- 07_segmentation.ipynb
-|   |-- 08_replay_prediction.ipynb
-|   |-- 09_experiment_analysis.ipynb
-|   `-- 10_dashboard_prep.ipynb
 |-- sql/
-|   |-- schema.sql
-|   |-- views_kpis.sql
-|   |-- cohort_queries.sql
-|   |-- funnel_queries.sql
-|   |-- segmentation_queries.sql
-|   |-- replay_prediction_queries.sql
-|   `-- experiment_queries.sql
 |-- src/
-|   |-- __init__.py
-|   |-- config.py
-|   |-- ingest.py
-|   |-- clean.py
-|   |-- transform.py
-|   |-- load_postgres.py
-|   |-- sessionize.py
-|   |-- features.py
-|   |-- modeling.py
-|   |-- evaluation.py
-|   `-- utils.py
 `-- dashboard/
-    `-- streamlit_app.py
 ```
 
 ## Tech Stack
@@ -155,5 +154,6 @@ Raw Last.fm files should be placed in `data/raw/lastfm_1k/` locally only. Raw, p
 ## Project Status
 
 Complete: Phase -1: Dataset selected  
-In progress: Phase 0: Project setup in progress  
-Not started: Phase 1: Data ingestion and profiling
+Complete: Phase 0: Project setup complete  
+Complete: Phase 1: Data ingestion and profiling complete  
+Next: Phase 2: Data cleaning and transformation

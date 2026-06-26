@@ -1,31 +1,51 @@
 ﻿# Data Dictionary
 
-Status: Draft. To be updated after Phase 1 data profiling.
+Status: Updated after Phase 1 profiling.
 
-## Expected Raw Listening Events
+## Raw Listening Events
 
-| Column | Description | Notes |
+| Column | Description | Phase 1 Notes |
 |---|---|---|
 | user_id | Listener identifier | Required for user-level analytics |
-| timestamp | Time of listening event | Required for retention and sessions |
-| artist_id | Artist identifier | May contain missing values |
-| artist_name | Artist name | Used for artist-level analysis |
-| track_id | Track identifier | May contain missing values |
-| track_name | Track/song name | Used for track-level replay analysis |
+| timestamp | Time of listening event | Required for retention, sessions, and replay windows |
+| artist_id | Artist identifier | Contains missing values: 600,848 rows, 3.15% |
+| artist_name | Artist name | Important fallback identifier |
+| track_id | Track identifier | Contains noticeable missing values: 2,162,719 rows, 11.32% |
+| track_name | Track/song name | Very low missingness: 210 rows, approximately 0.00% |
+
+## Raw User Profile
+
+| Column | Description | Phase 1 Notes |
+|---|---|---|
+| user_id | Listener identifier | Renamed from raw `#id` column |
+| gender | User profile field | Available if present in raw profile file |
+| age | User profile field | Needs validation in Phase 2 |
+| country | User location field | Useful for exploratory analysis if complete enough |
+| signup_date | Registration date | Renamed from raw `registered` column |
+
+## Phase 1 Dataset Profile
+
+| Metric | Value |
+|---|---:|
+| Parsed listening events | 19,098,853 |
+| Unique users | 992 |
+| Unique artists | 173,921 |
+| Unique tracks | 1,083,470 |
+| Date range | 2005-02-14 to 2013-09-29 |
 
 ## Planned Derived Tables
 
 ### dim_users
-User-level table.
+User-level dimension table.
 
 ### dim_artists
-Artist-level table.
+Artist-level dimension table.
 
 ### dim_tracks
-Track-level table.
+Track-level dimension table.
 
 ### dim_dates
-Date dimension.
+Date dimension for time-based analysis.
 
 ### fact_listening_events
 Main event-level fact table.
@@ -41,3 +61,12 @@ User-artist interaction table.
 
 ### fact_user_track_activity
 User-track interaction table.
+
+## Phase 2 Cleaning Decisions To Make
+
+- Whether to use `artist_id`, `artist_name`, or a fallback key for artist-level analysis
+- Whether to use `track_id`, `track_name`, or a fallback key for track-level analysis
+- How to handle missing track names
+- Whether exact duplicate listening events should be removed
+- How to validate and standardize timestamps
+- How to handle malformed rows skipped during ingestion
