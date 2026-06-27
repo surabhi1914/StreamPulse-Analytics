@@ -18,6 +18,23 @@ Phase 1 profiling confirmed:
 | Unique tracks | 1,083,470 |
 | Date range | 2005-02-14 to 2013-09-29 |
 
+## Phase 2 Cleaning Validation
+
+Phase 2 confirmed that the Last.fm-1K listening data can be cleaned into analysis-ready event files.
+
+The full parsed listening dataset contained 19,098,853 rows. After cleaning, 19,098,642 valid listening events were retained across 39 chunk files. Only 211 rows were removed because they were missing required fields after cleaning.
+
+The cleaned event data has complete required fields and complete fallback keys:
+
+- Missing `user_id`: 0
+- Missing `timestamp`: 0
+- Missing `artist_name`: 0
+- Missing `track_name`: 0
+- Missing `artist_key`: 0
+- Missing `track_key`: 0
+
+This validates that the selected dataset is suitable for the next phase: analytics data modeling.
+
 Strengths:
 
 - User-level listening behavior

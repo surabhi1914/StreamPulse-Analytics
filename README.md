@@ -5,7 +5,7 @@ Product Analytics Platform for Music Streaming Behavior
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](requirements.txt)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-planned-336791.svg)](sql/schema.sql)
 [![Streamlit](https://img.shields.io/badge/Streamlit-planned-FF4B4B.svg)](dashboard/streamlit_app.py)
-[![Status](https://img.shields.io/badge/Status-Phase%201%20Complete-brightgreen.svg)](docs/phase_updates.md)
+[![Status](https://img.shields.io/badge/Status-Phase%202%20Complete-brightgreen.svg)](docs/phase_updates.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Overview
@@ -24,7 +24,7 @@ Music streaming platforms need to understand what behaviors lead to long-term en
 
 The MVP uses the Last.fm-1K listening dataset because it contains user-level timestamped listening events with artist and track information.
 
-Last.fm-1K supports product analytics questions that require many users and timestamped behavior. It is better suited for this MVP than single-user personal Spotify exports because it can support cohort analysis, retention-style analysis, segmentation, and replay prediction across listeners.
+Last.fm-1K supports product analytics questions that require many users and timestamped behavior. It can support cohort analysis, retention-style analysis, segmentation, and replay prediction across listeners.
 
 ## Dataset Summary
 
@@ -38,22 +38,26 @@ Phase 1 profiling confirmed:
 | Unique tracks | 1,083,470 |
 | Date range | 2005-02-14 to 2013-09-29 |
 
-## Phase 1: Data Profiling Summary
+## Phase 2: Data Cleaning Summary
 
-Phase 1 focused on understanding the raw Last.fm-1K files before cleaning or modeling.
+Phase 2 converted the raw Last.fm-1K files into analysis-ready processed outputs.
 
-A 100K-row sample was used for schema inspection, while full-dataset profiling was performed with chunked processing to avoid loading the full listening file into memory.
+The user profile data was cleaned by standardizing dates, numeric age values, and text fields. Listening events were cleaned by parsing timestamps, removing rows missing required fields, creating fallback artist and track keys, and saving cleaned outputs.
 
-Key findings:
+Because the full listening events file is large, full-file cleaning was performed with chunked processing instead of loading all rows into memory at once.
 
-- The dataset supports user-level product analytics because it includes user IDs and timestamped listening events.
-- The dataset supports retention analysis because listening activity spans multiple years.
-- Artist-level and track-level replay analysis are feasible.
-- `artist_id` is missing in 600,848 rows, or 3.15% of parsed listening events.
-- `track_id` is missing in 2,162,719 rows, or 11.32% of parsed listening events.
-- `track_name` is missing in 210 rows, which is negligible relative to the full dataset size.
-- Phase 2 will define fallback identifier logic for artist-level and track-level analysis.
-- The dataset is historical, so final insights will be framed as a product analytics case study.
+| Metric | Value |
+|---|---:|
+| Raw parsed listening rows | 19,098,853 |
+| Cleaned listening rows saved | 19,098,642 |
+| Rows removed | 211 |
+| Cleaned chunk files | 39 |
+| Cleaned date range | 2005-02-14 to 2013-09-29 |
+| Missing required fields after cleaning | 0 |
+| Missing artist keys after cleaning | 0 |
+| Missing track keys after cleaning | 0 |
+
+Rows with missing `artist_id` or `track_id` were retained because fallback `artist_key` and `track_key` values were created from artist and track names.
 
 ## Dataset Limitations
 
@@ -71,13 +75,14 @@ This dataset does not include:
 
 Because of this, the project focuses on valid analyses such as listening engagement, retention, replay behavior, segmentation, inactivity risk, and observational experimentation.
 
-One ingestion limitation is that chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
+The dataset is historical, so findings will be framed as a product analytics case study. One ingestion limitation is that chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
 
 ## Target Skills Demonstrated
 
 - Product analytics
 - Data engineering
 - SQL analytics
+- Data cleaning and validation
 - Data modeling
 - KPI design
 - Cohort retention analysis
@@ -156,4 +161,5 @@ Raw Last.fm files should be placed in `data/raw/lastfm_1k/` locally only. Raw, p
 Complete: Phase -1: Dataset selected  
 Complete: Phase 0: Project setup complete  
 Complete: Phase 1: Data ingestion and profiling complete  
-Next: Phase 2: Data cleaning and transformation
+Complete: Phase 2: Data cleaning and transformation complete  
+Next: Phase 3: Analytics data modeling

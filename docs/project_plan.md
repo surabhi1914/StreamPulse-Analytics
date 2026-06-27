@@ -494,7 +494,7 @@ Status: Complete
 
 Phase 1 confirmed that the Last.fm-1K dataset is large enough and structured enough for the MVP. Full-dataset profiling found 19,098,853 parsed listening events, 992 users, 173,921 artists, 1,083,470 tracks, and activity from 2005-02-14 to 2013-09-29.
 
-Phase 2 is the next active phase and will focus on cleaning, timestamp validation, duplicate handling, malformed-row documentation, and fallback identifier logic for missing `artist_id` and `track_id` values.
+Phase 2 is complete. It cleaned the full listening dataset into 39 chunk files and created fallback `artist_key` and `track_key` values for rows with missing IDs.
 ---
 
 # Phase 2: Data Cleaning and Transformation
@@ -551,6 +551,18 @@ Add:
 - How missing values were handled
 - Data quality checks
 
+---
+
+
+## Phase 2 Cleaning Update
+
+Status: Complete
+
+Phase 2 cleaned the Last.fm-1K profile data, a 100K-row listening sample, and the full listening dataset. Full-file cleaning retained 19,098,642 valid listening events across 39 cleaned chunk files and removed 211 rows missing required fields.
+
+Rows with missing `artist_id` or `track_id` were retained by creating fallback `artist_key` and `track_key` values. Global duplicate detection across chunks will be handled later during warehouse loading or SQL modeling if needed.
+
+Phase 3 is the next active phase and will focus on analytics data modeling.
 ---
 
 # Phase 3: Analytics Data Modeling
@@ -1466,8 +1478,8 @@ These extensions should be separate modules or separate projects unless the data
 [x] Phase -1: Dataset decision documentation
 [x] Phase 0: Project setup
 [x] Phase 1: Data ingestion and profiling
-[ ] Phase 2: Data cleaning and transformation (next)
-[ ] Phase 3: Analytics data modeling
+[x] Phase 2: Data cleaning and transformation
+[ ] Phase 3: Analytics data modeling (next)
 [ ] Phase 4: Product metrics layer
 [ ] Phase 5: Cohort retention analysis
 [ ] Phase 6: Funnel analysis
@@ -1502,4 +1514,5 @@ This project is successful if it demonstrates:
 15. Resume-ready and interview-discussable project narrative
 
 ---
+
 

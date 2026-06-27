@@ -32,13 +32,24 @@ Phase 1 confirmed these full-dataset profile values:
 | Unique tracks | 1,083,470 |
 | Date range | 2005-02-14 to 2013-09-29 |
 
-The dataset also requires careful handling of missing IDs:
+## Phase 2 Cleaning Validation
 
-- `artist_id` has missing values: 600,848 rows, 3.15%
-- `track_id` has noticeable missing values: 2,162,719 rows, 11.32%
-- `track_name` missingness is negligible relative to total rows: 210 rows, approximately 0.00%
+Phase 2 further validated the decision to use Last.fm-1K for the MVP.
 
-Because of this, Phase 2 will define fallback identifier logic for artist and track analysis.
+The full listening dataset was cleaned successfully using chunked processing. The cleaning process retained 19,098,642 valid listening events across 39 chunk files and removed only 211 rows with missing required fields.
+
+The cleaned dataset contains complete values for the fields needed for core product analytics:
+
+- `user_id`
+- `timestamp`
+- `artist_name`
+- `track_name`
+- `artist_key`
+- `track_key`
+
+Rows with missing `artist_id` or `track_id` were retained because fallback identifiers were created. This allows the project to preserve useful listening behavior while still supporting reliable artist-level and track-level analysis.
+
+This confirms that Last.fm-1K is suitable for retention analysis, funnel analysis, behavioral segmentation, replay modeling, and analytics data modeling.
 
 ## Why Selected
 
@@ -99,3 +110,4 @@ Datasets should not be joined unless they share real user identifiers.
 - The 100K-row sample is useful for schema inspection but not representative for user-level counts because the raw file appears ordered by `user_id`.
 - Full-dataset statistics should come from chunked profiling results.
 - Chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
+- Duplicate removal currently happens within each chunk. Global duplicate detection across chunks will be handled later during warehouse loading or SQL modeling if needed.

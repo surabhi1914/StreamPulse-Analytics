@@ -25,3 +25,5 @@ DASHBOARD_DIR = PROJECT_ROOT / "dashboard"
 LASTFM_RAW_DIR = RAW_DATA_DIR / "lastfm_1k"
 PROFILE_PATH = LASTFM_RAW_DIR / "userid-profile.tsv"
 LISTENING_PATH = LASTFM_RAW_DIR / "userid-timestamp-artid-artname-traid-traname.tsv"
+
+CLEANED_CHUNKS_DIR = PROCESSED_DATA_DIR / "listening_events_cleaned_chunks"
