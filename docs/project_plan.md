@@ -302,25 +302,6 @@ Should include:
 
 ## README Update After Phase -1
 
-Add:
-
-```markdown
-## Dataset Selection
-
-Before implementation, multiple music datasets were evaluated to ensure the project supported realistic product analytics workflows.
-
-Datasets considered:
-
-- Last.fm-1K listening dataset
-- KKBox churn dataset
-- Spotify Million Playlist Dataset
-- Hybrid approach
-
-Last.fm-1K was selected for the MVP because it supports user-level listening behavior, timestamped activity, retention analysis, replay prediction, segmentation, and funnel analysis.
-
-The project does not claim to analyze saved tracks, playlist additions, skip behavior, devices, premium conversion, or revenue because those fields are not available in the selected dataset.
-```
-
 ---
 
 # Phase 0: Project Setup
@@ -345,84 +326,67 @@ Set up a clean project structure for the Last.fm-based analytics project.
 
 ---
 
-## Repository Name
-
-Recommended:
-
-```text
-streampulse-analytics
-```
-
-Alternative names:
-
-```text
-music-streaming-analytics
-streaming-retention-intelligence
-music-product-analytics
-listener-retention-analytics
-```
-
----
-
 ## Suggested Repository Structure
 
 ```text
 streampulse-analytics/
-â”‚
-â”œâ”€â”€ README.md
-â”œâ”€â”€ requirements.txt
-â”œâ”€â”€ .gitignore
-â”‚
-â”œâ”€â”€ docs/
-â”‚   â”œâ”€â”€ project_plan.md
-â”‚   â”œâ”€â”€ source_assessment.md
-â”‚   â”œâ”€â”€ dataset_decision.md
-â”‚   â”œâ”€â”€ data_dictionary.md
-â”‚   â”œâ”€â”€ phase_updates.md
-â”‚   â””â”€â”€ business_recommendations.md
-â”‚
-â”œâ”€â”€ data/
-â”‚   â”œâ”€â”€ raw/
-â”‚   â”œâ”€â”€ processed/
-â”‚   â”œâ”€â”€ warehouse/
-â”‚   â””â”€â”€ outputs/
-â”‚
-â”œâ”€â”€ notebooks/
-â”‚   â”œâ”€â”€ 01_data_profile.ipynb
-â”‚   â”œâ”€â”€ 02_data_cleaning.ipynb
-â”‚   â”œâ”€â”€ 03_data_modeling.ipynb
-â”‚   â”œâ”€â”€ 04_kpi_analysis.ipynb
-â”‚   â”œâ”€â”€ 05_cohort_retention.ipynb
-â”‚   â”œâ”€â”€ 06_funnel_analysis.ipynb
-â”‚   â”œâ”€â”€ 07_segmentation.ipynb
-â”‚   â”œâ”€â”€ 08_replay_prediction.ipynb
-â”‚   â”œâ”€â”€ 09_experiment_analysis.ipynb
-â”‚   â””â”€â”€ 10_dashboard_prep.ipynb
-â”‚
-â”œâ”€â”€ sql/
-â”‚   â”œâ”€â”€ schema.sql
-â”‚   â”œâ”€â”€ views_kpis.sql
-â”‚   â”œâ”€â”€ cohort_queries.sql
-â”‚   â”œâ”€â”€ funnel_queries.sql
-â”‚   â”œâ”€â”€ segmentation_queries.sql
-â”‚   â”œâ”€â”€ replay_prediction_queries.sql
-â”‚   â””â”€â”€ experiment_queries.sql
-â”‚
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ __init__.py
-â”‚   â”œâ”€â”€ config.py
-â”‚   â”œâ”€â”€ ingest.py
-â”‚   â”œâ”€â”€ clean.py
-â”‚   â”œâ”€â”€ transform.py
-â”‚   â”œâ”€â”€ load_postgres.py
-â”‚   â”œâ”€â”€ sessionize.py
-â”‚   â”œâ”€â”€ features.py
-â”‚   â”œâ”€â”€ modeling.py
-â”‚   â”œâ”€â”€ evaluation.py
-â”‚   â””â”€â”€ utils.py
-â”‚
-â””â”€â”€ dashboard/
-    â””â”€â”€ streamlit_app.py
+|-- README.md
+|-- requirements.txt
+|-- .gitignore
+|-- LICENSE
+|
+|-- docs/
+|   |-- project_plan.md
+|   |-- source_assessment.md
+|   |-- dataset_decision.md
+|   |-- data_dictionary.md
+|   |-- phase_updates.md
+|   `-- business_recommendations.md
+|
+|-- data/
+|   |-- raw/
+|   |   `-- lastfm_1k/
+|   |-- processed/
+|   |-- warehouse/
+|   `-- outputs/
+|
+|-- notebooks/
+|   |-- 01_data_profile.ipynb
+|   |-- 02_data_cleaning.ipynb
+|   |-- 03_data_modeling.ipynb
+|   |-- 04_kpi_analysis.ipynb
+|   |-- 05_cohort_retention.ipynb
+|   |-- 06_funnel_analysis.ipynb
+|   |-- 07_segmentation.ipynb
+|   |-- 08_replay_prediction.ipynb
+|   |-- 09_experiment_analysis.ipynb
+|   `-- 10_dashboard_prep.ipynb
+|
+|-- sql/
+|   |-- schema.sql
+|   |-- indexes.sql
+|   |-- views_kpis.sql
+|   |-- cohort_queries.sql
+|   |-- funnel_queries.sql
+|   |-- segmentation_queries.sql
+|   |-- replay_prediction_queries.sql
+|   `-- experiment_queries.sql
+|
+|-- src/
+|   |-- __init__.py
+|   |-- config.py
+|   |-- ingest.py
+|   |-- clean.py
+|   |-- transform.py
+|   |-- load_postgres.py
+|   |-- sessionize.py
+|   |-- features.py
+|   |-- modeling.py
+|   |-- evaluation.py
+|   `-- utils.py
+|
+`-- dashboard/
+    `-- streamlit_app.py
 ```
 
 ---
@@ -487,15 +451,11 @@ Add:
 
 ---
 
-
 ## Phase 1 Profiling Update
 
 Status: Complete
 
 Phase 1 confirmed that the Last.fm-1K dataset is large enough and structured enough for the MVP. Full-dataset profiling found 19,098,853 parsed listening events, 992 users, 173,921 artists, 1,083,470 tracks, and activity from 2005-02-14 to 2013-09-29.
-
-Phase 2 is complete. It cleaned the full listening dataset into 39 chunk files and created fallback `artist_key` and `track_key` values for rows with missing IDs.
----
 
 # Phase 2: Data Cleaning and Transformation
 
@@ -553,7 +513,6 @@ Add:
 
 ---
 
-
 ## Phase 2 Cleaning Update
 
 Status: Complete
@@ -561,9 +520,6 @@ Status: Complete
 Phase 2 cleaned the Last.fm-1K profile data, a 100K-row listening sample, and the full listening dataset. Full-file cleaning retained 19,098,642 valid listening events across 39 cleaned chunk files and removed 211 rows missing required fields.
 
 Rows with missing `artist_id` or `track_id` were retained by creating fallback `artist_key` and `track_key` values. Global duplicate detection across chunks will be handled later during warehouse loading or SQL modeling if needed.
-
-Phase 3 is complete. The cleaned listening dataset was loaded into a PostgreSQL star schema with validated dimension relationships.
----
 
 # Phase 3: Analytics Data Modeling
 
@@ -650,15 +606,12 @@ Add:
 
 ---
 
-
 ## Phase 3 Warehouse Update
 
 Status: Complete
 
 Phase 3 completed the analytics data modeling layer. The cleaned listening data was loaded into a PostgreSQL star schema with 19,098,642 fact rows and validated dimension relationships. The warehouse includes `dim_users`, `dim_artists`, `dim_tracks`, `dim_dates`, and `fact_listening_events`.
-
 Warehouse validation passed with zero required fact nulls and zero missing user, artist, track, or date dimension matches. The project is now ready for the product metrics layer.
----
 
 # Phase 4: Product Metrics Layer
 
@@ -1524,6 +1477,3 @@ This project is successful if it demonstrates:
 15. Resume-ready and interview-discussable project narrative
 
 ---
-
-
-

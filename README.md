@@ -125,8 +125,70 @@ The dataset is historical, so findings will be framed as a product analytics cas
 12. Phase 10: Executive dashboard
 13. Phase 11: Business recommendations
 
-## Tech Stack
+## Suggested Repository Structure
 
+```text
+streampulse-analytics/
+|-- README.md
+|-- requirements.txt
+|-- .gitignore
+|-- LICENSE
+|
+|-- docs/
+|   |-- project_plan.md
+|   |-- source_assessment.md
+|   |-- dataset_decision.md
+|   |-- data_dictionary.md
+|   |-- phase_updates.md
+|   `-- business_recommendations.md
+|
+|-- data/
+|   |-- raw/
+|   |   `-- lastfm_1k/
+|   |-- processed/
+|   |-- warehouse/
+|   `-- outputs/
+|
+|-- notebooks/
+|   |-- 01_data_profile.ipynb
+|   |-- 02_data_cleaning.ipynb
+|   |-- 03_data_modeling.ipynb
+|   |-- 04_kpi_analysis.ipynb
+|   |-- 05_cohort_retention.ipynb
+|   |-- 06_funnel_analysis.ipynb
+|   |-- 07_segmentation.ipynb
+|   |-- 08_replay_prediction.ipynb
+|   |-- 09_experiment_analysis.ipynb
+|   `-- 10_dashboard_prep.ipynb
+|
+|-- sql/
+|   |-- schema.sql
+|   |-- indexes.sql
+|   |-- views_kpis.sql
+|   |-- cohort_queries.sql
+|   |-- funnel_queries.sql
+|   |-- segmentation_queries.sql
+|   |-- replay_prediction_queries.sql
+|   `-- experiment_queries.sql
+|
+|-- src/
+|   |-- __init__.py
+|   |-- config.py
+|   |-- ingest.py
+|   |-- clean.py
+|   |-- transform.py
+|   |-- load_postgres.py
+|   |-- sessionize.py
+|   |-- features.py
+|   |-- modeling.py
+|   |-- evaluation.py
+|   `-- utils.py
+|
+`-- dashboard/
+    `-- streamlit_app.py
+```
+
+## Tech Stack
 | Category | Tools |
 | --- | --- |
 | Programming | Python |
@@ -150,3 +212,4 @@ Complete: Phase 1: Data ingestion and profiling complete
 Complete: Phase 2: Data cleaning and transformation complete  
 Complete: Phase 3: Analytics data modeling complete  
 Next: Phase 4: Product metrics layer
+
