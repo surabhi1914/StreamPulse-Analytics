@@ -37,3 +37,7 @@ Thumbs.db
 
 # mynotes
 notes.txt
+
+# agents
+.agents/
+.agents
