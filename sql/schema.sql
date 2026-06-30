@@ -1,7 +1,4 @@
-﻿-- SQL schema for StreamPulse Analytics.
-
-
--- ============================================================================
+﻿-- ============================================================================
 -- STREAMPULSE ANALYTICS - DATA WAREHOUSE SCHEMA DOCUMENTATION
 -- ============================================================================
 -- This project utilizes a Star Schema design optimized for analytics.
@@ -51,16 +48,20 @@
 -- ----------------------------------------------------------------------------
 -- Role: The core transactional data table capturing the stream events (~19M rows).
 -- Granularity: One row per unique stream/play instance.
--- Design Note: Contains NO text attributes (like user names or song names). 
---              Instead, it acts as the bridge connecting all dim_ tables 
---              together via optimized relational Foreign Keys.
+-- Contains no descriptive music/user text attributes; only keys, timestamps, and load metadata.
 -- ============================================================================
 
 -- ---------------------------------------------
+-- Database Drop
+-- ---------------------------------------------
+DROP TABLE IF EXISTS fact_listening_events;
+DROP TABLE IF EXISTS dim_tracks;
+DROP TABLE IF EXISTS dim_artists;
+DROP TABLE IF EXISTS dim_dates;
+DROP TABLE IF EXISTS dim_users;
+-- ---------------------------------------------
 -- Database Definitions
 -- ---------------------------------------------
-
-
 -- -------------------Create Tables - Users-------------------
 CREATE TABLE dim_users (
     user_id VARCHAR(512) NOT NULL PRIMARY KEY,
@@ -72,28 +73,6 @@ CREATE TABLE dim_users (
 
 
 
--- -------------------Create Tables - Artist-------------------
-CREATE TABLE dim_artists (
-    artist_key VARCHAR(512) NOT NULL PRIMARY KEY,
-    artist_id VARCHAR(512),
-    artist_name TEXT,
-    has_artist_id BOOLEAN
-);
-
-
--- -------------------Create Tables - Tracks-------------------
-CREATE TABLE dim_tracks (
-    track_key  VARCHAR(512) NOT NULL PRIMARY KEY,
-    track_id VARCHAR(512),
-    track_name TEXT,
-    artist_key VARCHAR(512),
-    artist_name TEXT,
-    has_track_id BOOLEAN,
-
-    CONSTRAINT fk_artist_key
-        FOREIGN KEY (artist_key) REFERENCES dim_artists(artist_key)
-);
-
 -- -------------------Create Tables - dates-------------------
 -- Calendar helper table for time-based analysis
 CREATE TABLE dim_dates (
@@ -103,47 +82,59 @@ CREATE TABLE dim_dates (
     month INT,
     month_name TEXT,
     week INT,
-    day_of_month TEXT,
-    day_of_week TEXT,
+    day_of_month INT,
+    day_of_week INT,
     day_name TEXT,
     is_weekend BOOLEAN
 );
 
--- -------------------Create Tables - Listening evnts-------------------
-CREATE TABLE facts_listening_events (
-    event_id INT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
-    user_id VARCHAR(512),
-    artist_key VARCHAR(512),
-    track_key VARCHAR(512),
-    listened_at TIMESTAMP,
-    listened_date DATE,
+
+-- -------------------Create Tables - Artist-------------------
+CREATE TABLE dim_artists (
+    artist_key VARCHAR(512) NOT NULL PRIMARY KEY,
+    artist_id VARCHAR(512),
+    artist_name TEXT NOT NULL,
+    has_artist_id BOOLEAN NOT NULL
+);
+
+-- -------------------Create Tables - Tracks-------------------
+CREATE TABLE dim_tracks (
+    track_key TEXT NOT NULL PRIMARY KEY,
+    track_id TEXT,
+    track_name TEXT NOT NULL, 
+    artist_key VARCHAR(512) NOT NULL,
+    artist_name TEXT NOT NULL,
+    has_track_id BOOLEAN NOT NULL,
+
+    CONSTRAINT fk_dim_tracks_artist
+        FOREIGN KEY (artist_key) REFERENCES dim_artists(artist_key)
+);
+
+
+-- -------------------Create Tables - Listening events-------------------
+CREATE TABLE fact_listening_events (
+    event_id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    user_id VARCHAR(512) NOT NULL,
+    artist_key VARCHAR(512) NOT NULL,
+    track_key VARCHAR(512) NOT NULL,
+    listened_at TIMESTAMPTZ NOT NULL,
+    listened_date DATE NOT NULL,
     source_chunk TEXT,
 
-    CONSTRAINT fkn_user_id
-        FOREIGN KEY (user_id) REFERENCES dim_users(user_id)
+    CONSTRAINT fk_fact_events_user
+        FOREIGN KEY (user_id) REFERENCES dim_users(user_id),
 
-    CONSTRAINT fk_artist_key
-        FOREIGN KEY (artist_key) REFERENCES dim_artists(artist_key)
+    CONSTRAINT fk_fact_events_artist
+        FOREIGN KEY (artist_key) REFERENCES dim_artists(artist_key),
 
-    CONSTRAINT fk_track_key
-        FOREIGN KEY (track_key) REFERENCES dim_tracks(track_key)
+    CONSTRAINT fk_fact_events_track
+        FOREIGN KEY (track_key) REFERENCES dim_tracks(track_key),
 
-    CONSTRAINT fkn_listened_date
+    CONSTRAINT fk_fact_events_date
         FOREIGN KEY (listened_date) REFERENCES dim_dates(date_key)
-)
+);
 
 
--- -------------------Indexes - Listening events-------------------
--- An index is a separate, highly organized lookup table (usually structured as a B-Tree) that points directly to where the data lives. 
--- It allows the database to instantly find matching rows in milliseconds.
--- Cons - While indexes make reading data lightning fast, they slow down writing data (INSERT / LOAD DATA INFILE). This is because every time you add a row, the database has to update all 6 of these indexes.
--- CREATE INDEX index_name ON table_name(column_names)
 
 
-CREATE INDEX idx_listening_user ON fact_listening_events(user_id);
-CREATE INDEX idx_listened_at ON facts_listening_events(listened_at);
-CREATE INDEX idx_listened_date ON facts_listening_events(listened_date);
-CREATE INDEX idx_artist_key ON facts_listening_events(artist_key);
-CREATE INDEX idx_track_key ON facts_listening_events(track_key);
 
-CREATE INDEX idx_listening_user_time ON facts_listening_events(user_id, listened_at);
