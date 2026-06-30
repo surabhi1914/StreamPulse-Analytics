@@ -24,16 +24,21 @@ Phase 2 confirmed that the Last.fm-1K listening data can be cleaned into analysi
 
 The full parsed listening dataset contained 19,098,853 rows. After cleaning, 19,098,642 valid listening events were retained across 39 chunk files. Only 211 rows were removed because they were missing required fields after cleaning.
 
-The cleaned event data has complete required fields and complete fallback keys:
+## Phase 3 Warehouse Validation
 
-- Missing `user_id`: 0
-- Missing `timestamp`: 0
-- Missing `artist_name`: 0
-- Missing `track_name`: 0
-- Missing `artist_key`: 0
-- Missing `track_key`: 0
+Phase 3 confirmed that the selected Last.fm-1K dataset can support a full PostgreSQL analytics warehouse.
 
-This validates that the selected dataset is suitable for the next phase: analytics data modeling.
+The cleaned listening data was successfully loaded into a star schema with:
+
+- 992 users
+- 176,697 artist dimension rows
+- 1,503,135 track dimension rows
+- 1,589 date dimension rows
+- 19,098,642 listening event fact rows
+
+Warehouse validation checks confirmed no missing required fact fields and no broken references between the fact table and dimension tables.
+
+This further validates Last.fm-1K as suitable for product analytics, retention analysis, funnel analysis, segmentation, and replay modeling.
 
 Strengths:
 
@@ -46,6 +51,7 @@ Strengths:
 - Supports behavioral segmentation
 - Supports funnel-style engagement analysis
 - Large enough to demonstrate chunked profiling and scalable data handling
+- Suitable for PostgreSQL star schema modeling
 
 Limitations:
 

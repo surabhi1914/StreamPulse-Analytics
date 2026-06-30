@@ -61,14 +61,6 @@ Key Results:
 | Unique tracks | 1,083,470 |
 | Date range | 2005-02-14 to 2013-09-29 |
 
-Important Notes:
-
-- The 100K-row sample is not representative for user-level counts because the raw file appears ordered by `user_id`.
-- Full-dataset profiling should be used for dataset-level statistics.
-- `artist_id` and `track_id` missingness is handled through fallback keys in Phase 2.
-- Chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
-- The dataset is historical and should be framed as a product analytics case study.
-
 ---
 
 ## Phase 2: Data Cleaning and Transformation
@@ -103,20 +95,6 @@ Key Results:
 | Missing track_key after cleaning | 0 |
 | Cleaned date range | 2005-02-14 to 2013-09-29 |
 
-Sample Results:
-
-| Metric | Value |
-|---|---:|
-| Cleaned user profile rows | 992 |
-| Cleaned user profile columns | 5 |
-| Cleaned listening sample rows | 100,000 |
-| Cleaned listening sample columns | 8 |
-| Rows removed from 100K sample | 0 |
-| Missing artist_id retained in sample | 2,771 |
-| Missing track_id retained in sample | 11,811 |
-| artist_key missing in sample | 0 |
-| track_key missing in sample | 0 |
-
 Important Notes:
 
 - Rows missing `user_id`, `timestamp`, `artist_name`, or `track_name` were removed.
@@ -125,6 +103,54 @@ Important Notes:
 - Cleaning was performed in chunks to avoid loading the full 2.4GB listening file into memory.
 - Duplicate removal currently happens within each chunk. Global duplicate detection across chunks will be handled later during warehouse loading or SQL modeling if needed.
 
+---
+
+## Phase 3: Analytics Data Modeling
+
+Status: Complete
+
+Completed:
+
+- Designed PostgreSQL star schema
+- Created dimension tables for users, artists, tracks, and dates
+- Created central fact table for listening events
+- Loaded cleaned user profile data
+- Built artist and track dimensions from cleaned event chunks
+- Built date dimension from listening timestamps
+- Loaded 19,098,642 cleaned listening events into PostgreSQL
+- Separated index creation into `sql/indexes.sql`
+- Created indexes after loading
+- Validated null checks and referential integrity
+- Created `notebooks/03_data_modeling.ipynb` to document warehouse validation
+
+Final Warehouse Counts:
+
+| Table | Rows |
+|---|---:|
+| `dim_users` | 992 |
+| `dim_artists` | 176,697 |
+| `dim_tracks` | 1,503,135 |
+| `dim_dates` | 1,589 |
+| `fact_listening_events` | 19,098,642 |
+
+Validation Results:
+
+| Check | Result |
+|---|---:|
+| Fact rows with required null fields | 0 |
+| Fact rows missing user dimension match | 0 |
+| Fact rows missing artist dimension match | 0 |
+| Fact rows missing track dimension match | 0 |
+| Fact rows missing date dimension match | 0 |
+
+Important Notes:
+
+- The warehouse uses a star schema optimized for analytics.
+- The fact table stores one row per cleaned listening event.
+- Long fallback keys were compacted with deterministic hashing before loading to PostgreSQL.
+- Indexes were created after loading to improve full-load performance.
+- PostgreSQL displays `TIMESTAMPTZ` values in local timezone, while the cleaned data was validated against UTC-equivalent timestamps.
+
 Next Phase:
 
-Phase 3 will focus on analytics data modeling.
+Phase 4 will focus on the product metrics layer.

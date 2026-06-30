@@ -38,18 +38,23 @@ Phase 2 further validated the decision to use Last.fm-1K for the MVP.
 
 The full listening dataset was cleaned successfully using chunked processing. The cleaning process retained 19,098,642 valid listening events across 39 chunk files and removed only 211 rows with missing required fields.
 
-The cleaned dataset contains complete values for the fields needed for core product analytics:
-
-- `user_id`
-- `timestamp`
-- `artist_name`
-- `track_name`
-- `artist_key`
-- `track_key`
-
 Rows with missing `artist_id` or `track_id` were retained because fallback identifiers were created. This allows the project to preserve useful listening behavior while still supporting reliable artist-level and track-level analysis.
 
-This confirms that Last.fm-1K is suitable for retention analysis, funnel analysis, behavioral segmentation, replay modeling, and analytics data modeling.
+## Phase 3 Warehouse Validation
+
+Phase 3 further validated the decision to use Last.fm-1K.
+
+After cleaning, the dataset was loaded into a PostgreSQL star schema with 19,098,642 listening events. The warehouse includes user, artist, track, and date dimensions, allowing the project to support scalable SQL-based analysis.
+
+Validation checks confirmed:
+
+- No missing required fact fields
+- No missing user dimension matches
+- No missing artist dimension matches
+- No missing track dimension matches
+- No missing date dimension matches
+
+This confirms that the dataset is ready for KPI development, cohort retention analysis, funnel analysis, segmentation, and replay modeling.
 
 ## Why Selected
 
@@ -110,4 +115,5 @@ Datasets should not be joined unless they share real user identifiers.
 - The 100K-row sample is useful for schema inspection but not representative for user-level counts because the raw file appears ordered by `user_id`.
 - Full-dataset statistics should come from chunked profiling results.
 - Chunked parsing uses `on_bad_lines="skip"`, so malformed rows may be excluded from the parsed row count.
+- PostgreSQL stores `listened_at` as `TIMESTAMPTZ`, so displayed values may appear in local timezone while preserving UTC-equivalent validation.
 - Duplicate removal currently happens within each chunk. Global duplicate detection across chunks will be handled later during warehouse loading or SQL modeling if needed.

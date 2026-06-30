@@ -2,11 +2,14 @@
 
 Product Analytics Platform for Music Streaming Behavior
 
-[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](requirements.txt)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-planned-336791.svg)](sql/schema.sql)
-[![Streamlit](https://img.shields.io/badge/Streamlit-planned-FF4B4B.svg)](dashboard/streamlit_app.py)
-[![Status](https://img.shields.io/badge/Status-Phase%202%20Complete-brightgreen.svg)](docs/phase_updates.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Warehouse-blue)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-purple)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-Database%20Loading-red)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-orange)
+![Streamlit](https://img.shields.io/badge/Streamlit-Planned-FF4B4B)
+![Status](https://img.shields.io/badge/Status-Phase%203%20Complete-brightgreen)
+![Focus](https://img.shields.io/badge/Focus-Product%20Analytics-informational)
 
 ## Overview
 
@@ -42,8 +45,6 @@ Phase 1 profiling confirmed:
 
 Phase 2 converted the raw Last.fm-1K files into analysis-ready processed outputs.
 
-The user profile data was cleaned by standardizing dates, numeric age values, and text fields. Listening events were cleaned by parsing timestamps, removing rows missing required fields, creating fallback artist and track keys, and saving cleaned outputs.
-
 Because the full listening events file is large, full-file cleaning was performed with chunked processing instead of loading all rows into memory at once.
 
 | Metric | Value |
@@ -59,19 +60,33 @@ Because the full listening events file is large, full-file cleaning was performe
 
 Rows with missing `artist_id` or `track_id` were retained because fallback `artist_key` and `track_key` values were created from artist and track names.
 
+## Phase 3: Analytics Data Modeling Summary
+
+Phase 3 loaded the cleaned Last.fm listening data into a PostgreSQL analytics warehouse using a star schema.
+
+The warehouse includes four dimension tables and one central fact table:
+
+| Table | Purpose | Rows |
+|---|---|---:|
+| `dim_users` | User profile attributes | 992 |
+| `dim_artists` | Analysis-ready artist dimension | 176,697 |
+| `dim_tracks` | Analysis-ready track dimension | 1,503,135 |
+| `dim_dates` | Calendar/date dimension | 1,589 |
+| `fact_listening_events` | Cleaned listening events | 19,098,642 |
+
+Validation checks confirmed:
+
+- Required fact fields are complete
+- Every fact row maps to a valid user
+- Every fact row maps to a valid artist
+- Every fact row maps to a valid track
+- Every fact row maps to a valid calendar date
+
+Long name-based fallback keys were compacted with deterministic hashing before warehouse loading to avoid oversized PostgreSQL primary-key indexes while preserving referential consistency.
+
 ## Dataset Limitations
 
-This dataset does not include:
-
-- Saved or liked tracks
-- Playlist additions
-- Skip behavior
-- Device or platform
-- Subscription plan
-- Premium conversion
-- Revenue
-- True churn/cancellation labels
-- Real A/B test assignment
+This dataset does not include saved or liked tracks, playlist additions, skip behavior, device/platform, subscription plan, premium conversion, revenue, true churn/cancellation labels, or real A/B test assignment.
 
 Because of this, the project focuses on valid analyses such as listening engagement, retention, replay behavior, segmentation, inactivity risk, and observational experimentation.
 
@@ -84,6 +99,7 @@ The dataset is historical, so findings will be framed as a product analytics cas
 - SQL analytics
 - Data cleaning and validation
 - Data modeling
+- PostgreSQL warehouse loading
 - KPI design
 - Cohort retention analysis
 - Funnel analysis
@@ -92,10 +108,6 @@ The dataset is historical, so findings will be framed as a product analytics cas
 - Experimentation-style observational analysis
 - Streamlit dashboarding
 - Business recommendation writing
-
-## MVP Scope
-
-The MVP will include data ingestion and profiling, cleaning, PostgreSQL modeling, KPI views, cohort retention, funnel analysis, user segmentation, replay prediction, observational experiment-style analysis, an executive dashboard, and business recommendations.
 
 ## Project Roadmap
 
@@ -112,32 +124,6 @@ The MVP will include data ingestion and profiling, cleaning, PostgreSQL modeling
 11. Phase 9: Experimentation-style observational analysis
 12. Phase 10: Executive dashboard
 13. Phase 11: Business recommendations
-
-## Repository Structure
-
-```text
-streampulse-analytics/
-|-- README.md
-|-- requirements.txt
-|-- .gitignore
-|-- docs/
-|   |-- project_plan.md
-|   |-- source_assessment.md
-|   |-- dataset_decision.md
-|   |-- data_dictionary.md
-|   |-- phase_updates.md
-|   `-- business_recommendations.md
-|-- data/
-|   |-- raw/
-|   |   `-- lastfm_1k/
-|   |-- processed/
-|   |-- warehouse/
-|   `-- outputs/
-|-- notebooks/
-|-- sql/
-|-- src/
-`-- dashboard/
-```
 
 ## Tech Stack
 
@@ -162,4 +148,5 @@ Complete: Phase -1: Dataset selected
 Complete: Phase 0: Project setup complete  
 Complete: Phase 1: Data ingestion and profiling complete  
 Complete: Phase 2: Data cleaning and transformation complete  
-Next: Phase 3: Analytics data modeling
+Complete: Phase 3: Analytics data modeling complete  
+Next: Phase 4: Product metrics layer
